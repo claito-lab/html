@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Character Select</title>
+
+<style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #050505;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow: hidden;
+}
+
+/* FUNDO */
+
+.game {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+
+    background:
+        radial-gradient(circle at center, #202020 0%, #080808 55%, #000 100%);
+}
+
+/* LINHAS DO FUNDO */
+
+.game::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+
+    background-size: 50px 50px;
+
+    pointer-events: none;
+}
+
+/* TOPO */
+
+.header {
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    text-align: center;
+
+    letter-spacing: 7px;
+    font-size: 18px;
+    font-weight: bold;
+
+    opacity: .7;
+}
+
+/* PERSONAGEM */
+
+.character-area {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CARD */
+
+.character {
+
+    width: 420px;
+    height: 520px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    position: relative;
+
+    transition:
+        transform .35s ease,
+        opacity .35s ease,
+        filter .35s ease;
+}
+
+/* SILHUETA */
+
+.silhouette {
+
+    width: 300px;
+    height: 340px;
+
+    margin-top: 25px;
+
+    position: relative;
+
+    background: #000;
+
+    clip-path: polygon(
+        50% 0%,
+        67% 8%,
+        76% 23%,
+        75% 40%,
+        91% 58%,
+        100% 100%,
+        0% 100%,
+        9% 58%,
+        25% 40%,
+        24% 23%,
+        33% 8%
+    );
+
+    filter:
+        drop-shadow(0 0 12px rgba(255,255,255,.08));
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* INTERROGAÇÃO */
+
+.question {
+
+    font-size: 130px;
+    font-weight: 900;
+
+    color: #222;
+
+    text-shadow:
+        0 0 15px #444,
+        0 0 40px #111;
+
+    user-select: none;
+}
+
+/* NOME */
+
+.name {
+
+    margin-top: 18px;
+
+    font-size: 34px;
+    font-weight: 900;
+
+    letter-spacing: 5px;
+
+    text-transform: uppercase;
+
+    text-shadow:
+        0 0 10px rgba(255,255,255,.3);
+}
+
+/* STATUS */
+
+.status {
+
+    margin-top: 8px;
+
+    font-size: 13px;
+    letter-spacing: 3px;
+
+    color: #888;
+}
+
+/* PREÇO */
+
+.price {
+
+    margin-top: 20px;
+
+    padding: 12px 30px;
+
+    border: 1px solid #333;
+
+    background: rgba(0,0,0,.6);
+
+    font-size: 24px;
+    font-weight: bold;
+
+    letter-spacing: 2px;
+}
+
+.price small {
+
+    display: block;
+
+    font-size: 11px;
+
+    color: #777;
+
+    text-align: center;
+
+    margin-bottom: 5px;
+}
+
+/* DESCONTO */
+
+.discount {
+
+    margin-top: 5px;
+
+    color: #ff3333;
+
+    font-weight: bold;
+
+    font-size: 14px;
+
+    letter-spacing: 2px;
+}
+
+/* NAVEGAÇÃO */
+
+.arrow {
+
+    position: absolute;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 65px;
+    height: 65px;
+
+    border: 1px solid #444;
+
+    background: rgba(0,0,0,.6);
+
+    color: white;
+
+    font-size: 35px;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.arrow:hover {
+
+    background: white;
+
+    color: black;
+
+    transform: translateY(-50%) scale(1.1);
+}
+
+.left {
+    left: 60px;
+}
+
+.right {
+    right: 60px;
+}
+
+/* INDICADORES */
+
+.dots {
+
+    position: absolute;
+
+    bottom: 80px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    display: flex;
+
+    gap: 10px;
+}
+
+.dot {
+
+    width: 8px;
+    height: 8px;
+
+    background: #333;
+
+    border-radius: 50%;
+
+    transition: .3s;
+}
+
+.dot.active {
+
+    background: white;
+
+    box-shadow: 0 0 10px white;
+}
+
+/* BOTÃO */
+
+.button {
+
+    position: absolute;
+
+    bottom: 25px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    padding: 14px 55px;
+
+    background: white;
+
+    color: black;
+
+    border: none;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    letter-spacing: 3px;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.button:hover {
+
+    transform:
+        translateX(-50%)
+        scale(1.05);
+
+    box-shadow:
+        0 0 20px rgba(255,255,255,.5);
+}
+
+/* COMPRA */
+
+.buying {
+
+    animation: buying .8s infinite;
+}
+
+@keyframes buying {
+
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .3;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* GLITCH */
+
+.glitch {
+
+    animation:
+        glitch .12s infinite,
+        shake .15s infinite;
+}
+
+@keyframes glitch {
+
+    0% {
+        filter:
+            hue-rotate(0deg)
+            contrast(1);
+    }
+
+    25% {
+        filter:
+            hue-rotate(90deg)
+            contrast(2);
+    }
+
+    50% {
+        filter:
+            hue-rotate(180deg)
+            contrast(1.5);
+    }
+
+    75% {
+        filter:
+            hue-rotate(270deg)
+            contrast(3);
+    }
+
+    100% {
+        filter:
+            hue-rotate(360deg)
+            contrast(1);
+    }
+}
+
+@keyframes shake {
+
+    0% {
+        transform: translate(0);
+    }
+
+    25% {
+        transform: translate(8px,-4px);
+    }
+
+    50% {
+        transform: translate(-7px,5px);
+    }
+
+    75% {
+        transform: translate(5px,3px);
+    }
+
+    100% {
+        transform: translate(0);
+    }
+}
+
+/* REVELAÇÃO */
+
+.reveal {
+
+    animation: reveal .8s ease forwards;
+}
+
+@keyframes reveal {
+
+    0% {
+        opacity: 0;
+        transform: scale(1.5);
+        filter: blur(20px);
+    }
+
+    50% {
+        opacity: 1;
+        filter: blur(5px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0);
+    }
+}
+
+/* FLASH */
+
+.flash {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: white;
+
+    z-index: 100;
+
+    pointer-events: none;
+
+    animation: flash .5s ease forwards;
+}
+
+@keyframes flash {
+
+    0% {
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* TELA PLAY */
+
+.play-screen {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 90;
+
+    background: #000;
+
+    display: none;
+
+    justify-content: center;
+    align-items: center;
+
+    flex-direction: column;
+}
+
+.play-screen.show {
+
+    display: flex;
+
+    animation: playIn .8s ease;
+}
+
+@keyframes playIn {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.play-title {
+
+    font-size: 80px;
+
+    font-weight: 900;
+
+    letter-spacing: 15px;
+
+    margin-bottom: 40px;
+}
+
+.start {
+
+    padding: 18px 80px;
+
+    font-size: 20px;
+
+    letter-spacing: 5px;
+
+    background: white;
+
+    color: black;
+
+    border: none;
+
+    cursor: pointer;
+}
+
+.start:hover {
+
+    transform: scale(1.05);
+
+}
+
+/* MOBILE */
+
+@media(max-width:700px) {
+
+    .character {
+        transform: scale(.75);
+    }
+
+    .arrow {
+        width: 50px;
+        height: 50px;
+    }
+
+    .left {
+        left: 15px;
+    }
+
+    .right {
+        right: 15px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <div class="header">
+        CHARACTER SELECT
+    </div>
+
+    <div class="character-area">
+
+        <div id="character" class="character">
+
+            <div id="silhouette" class="silhouette">
+
+                <div id="question" class="question">
+                    ?
+                </div>
+
+            </div>
+
+            <div id="name" class="name">
+                COR***A
+            </div>
+
+            <div id="status" class="status">
+                LOCKED
+            </div>
+
+            <div id="price" class="price">
+
+                <small>UNLOCK</small>
+
+                5.000.000
+
+            </div>
+
+            <div id="discount" class="discount"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SETAS -->
+
+    <button class="arrow left" onclick="previous()">
+        ‹
+    </button>
+
+    <button class="arrow right" onclick="next()">
+        ›
+    </button>
+
+
+    <!-- INDICADORES -->
+
+    <div class="dots">
+
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+
+    </div>
+
+
+    <!-- BOTÃO -->
+
+    <button id="actionButton"
+            class="button"
+            onclick="action()">
+
+        SELECT
+
+    </button>
+
+</div>
+
+
+<!-- TELA FINAL -->
+
+<div id="playScreen" class="play-screen">
+
+    <div class="play-title">
+        DONA
+    </div>
+
+    <button class="start" onclick="startEdit()">
+        ▶ PLAY
+    </button>
+
+</div>
+
+
+<script>
+
+/* PERSONAGENS */
+
+const characters = [
+
+    {
+        name: "COR***A",
+        price: "5.000.000",
+        discount: "",
+        status: "LOCKED"
+    },
+
+    {
+        name: "*****KY",
+        price: "5.000.000",
+        discount: "",
+        status: "LOCKED"
+    },
+
+    {
+        name: "?????",
+        price: "50.000",
+        discount: "-99% PROMOÇÃO",
+        status: "LOCKED"
+    }
+
+];
+
+
+let current = 0;
+
+let unlocked = false;
+
+
+/* ELEMENTOS */
+
+const character =
+    document.getElementById("character");
+
+const name =
+    document.getElementById("name");
+
+const status =
+    document.getElementById("status");
+
+const price =
+    document.getElementById("price");
+
+const discount =
+    document.getElementById("discount");
+
+const actionButton =
+    document.getElementById("actionButton");
+
+const question =
+    document.getElementById("question");
+
+const silhouette =
+    document.getElementById("silhouette");
+
+const dots =
+    document.querySelectorAll(".dot");
+
+
+/* ATUALIZAR */
+
+function updateCharacter() {
+
+    const c = characters[current];
+
+    character.classList.remove(
+        "glitch",
+        "reveal"
+    );
+
+    name.textContent = c.name;
+
+    status.textContent =
+        c.status;
+
+    price.innerHTML =
+        `<small>UNLOCK</small>${c.price}`;
+
+    discount.textContent =
+        c.discount;
+
+    question.textContent =
+        "?";
+
+    actionButton.textContent =
+        current === 2
+            ? "BUY"
+            : "SELECT";
+
+    dots.forEach((dot, index) => {
+
+        dot.classList.toggle(
+            "active",
+            index === current
+        );
+
+    });
+
+}
+
+
+/* PRÓXIMO */
+
+function next() {
+
+    if (unlocked)
+        return;
+
+    current++;
+
+    if (current > 2)
+        current = 0;
+
+    updateCharacter();
+
+}
+
+
+/* ANTERIOR */
+
+function previous() {
+
+    if (unlocked)
+        return;
+
+    current--;
+
+    if (current < 0)
+        current = 2;
+
+    updateCharacter();
+
+}
+
+
+/* BOTÃO */
+
+function action() {
+
+    if (current !== 2)
+        return;
+
+    if (!unlocked) {
+
+        buyCharacter();
+
+    } else {
+
+        showPlay();
+
+    }
+
+}
+
+
+/* COMPRAR */
+
+function buyCharacter() {
+
+    actionButton.disabled = true;
+
+    actionButton.textContent =
+        "PURCHASING...";
+
+    price.classList.add("buying");
+
+    setTimeout(() => {
+
+        price.innerHTML =
+            "<small>PAYMENT</small>-50.000";
+
+    }, 700);
+
+
+    setTimeout(() => {
+
+        price.innerHTML =
+            "<small>STATUS</small>UNLOCKED";
+
+        status.textContent =
+            "UNLOCKED";
+
+        discount.textContent =
+            "";
+
+    }, 1400);
+
+
+    setTimeout(() => {
+
+        corrupt();
+
+    }, 2000);
+
+}
+
+
+/* CORRUPÇÃO */
+
+function corrupt() {
+
+    character.classList.add("glitch");
+
+    silhouette.style.background =
+        "linear-gradient(90deg,#000,#fff,#000)";
+
+    question.textContent =
+        "DON";
+
+    setTimeout(() => {
+
+        question.textContent =
+            "DONA";
+
+    }, 350);
+
+    setTimeout(() => {
+
+        character.classList.remove(
+            "glitch"
+        );
+
+        character.classList.add(
+            "reveal"
+        );
+
+        silhouette.style.background =
+            "#000";
+
+        question.textContent =
+            "D";
+
+        name.textContent =
+            "DONA";
+
+        status.textContent =
+            "CHARACTER UNLOCKED";
+
+        price.innerHTML =
+            "<small>STATUS</small>UNLOCKED";
+
+        actionButton.disabled =
+            false;
+
+        actionButton.textContent =
+            "▶ PLAY";
+
+        unlocked = true;
+
+    }, 1100);
+
+}
+
+
+/* PLAY */
+
+function showPlay() {
+
+    document
+        .getElementById("playScreen")
+        .classList.add("show");
+
+}
+
+
+/* COMEÇAR EDIT */
+
+function startEdit() {
+
+    /*
+        AQUI VOCÊ PODE COLOCAR
+        O SEU VÍDEO.
+
+        Exemplo:
+
+        window.location.href =
+        "minha-edit.mp4";
+
+        Ou podemos transformar
+        essa tela em um player
+        de vídeo diretamente.
+    */
+
+    const flash =
+        document.createElement("div");
+
+    flash.className =
+        "flash";
+
+    document.body.appendChild(
+        flash
+    );
+
+    setTimeout(() => {
+
+        flash.remove();
+
+    }, 600);
+
+}
+
+
+/* INICIAR */
+
+updateCharacter();
+
+
+/* TECLADO */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "ArrowRight")
+            next();
+
+        if (event.key === "ArrowLeft")
+            previous();
+
+        if (event.key === "Enter")
+            action();
+
+    }
+);
+
+</script>
+
+</body>
+</html>
